@@ -11,3 +11,7 @@
 .btn-outline {
   @apply px-8 py-3 inline-block bg-navy/5 border-2 border-bone/20 text-bone text-center rounded-xl font-semibold hover:-translate-y-1 transition duration-500;
 }
+
+.input {
+  @apply w-full px-5 py-3 inline-block bg-navy/5 border-2 border-bone/20 text-bone rounded-xl;
+}

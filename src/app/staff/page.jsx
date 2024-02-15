@@ -1,23 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Staff() {
-  const [staffList, setStaffList] = useState([
-    {
-      username: "Agilistikmal",
-      role: "CEO",
-    },
-    {
-      username: "Skeleton",
-      role: "COO",
-    },
-    {
-      username: "Creeper",
-      role: "Moderator",
-    },
-  ]);
+  const [staffList, setStaffList] = useState([]);
+
+  useEffect(() => {
+    async function loadStaff() {
+      const res = await fetch("/api/staff", {
+        headers: {
+          "X-API-KEY": "1123",
+        },
+      });
+      const data = await res.json();
+      setStaffList(data.data);
+    }
+    loadStaff();
+  }, []);
   return (
     <>
       <div className="bg-[url('/bg/2.jpg')] min-h-dvh">

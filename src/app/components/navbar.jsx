@@ -2,10 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const [menu, setMenu] = useState(false);
+  const [server, setServer] = useState();
+  useEffect(() => {
+    async function loadServer() {
+      const res = await fetch("/api/server", {
+        headers: {
+          "X-API-KEY": "1123",
+        },
+      });
+      const data = await res.json();
+      setServer(data.data);
+    }
+    loadServer();
+  }, []);
   return (
     <>
       <div className="rounded-xl px-8 py-5 bg-dark/50 text-white max-w-screen-xl mx-auto flex items-center justify-between relative">
@@ -18,7 +31,7 @@ export default function Navbar() {
             className="h-[64px] rounded-full"
           />
           <h1 className="font-bold text-3xl hidden md:inline-block">
-            BLOCKBUSTER
+            {server?.name}
           </h1>
         </Link>
         <div className="items-center gap-8 hidden sm:flex">

@@ -4,22 +4,36 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [server, setServer] = useState();
   const [copied, setCopied] = useState(false);
   const [serverStatus, setServerStatus] = useState();
 
   useEffect(() => {
+    async function loadServer() {
+      const res = await fetch("/api/server", {
+        headers: {
+          "X-API-KEY": "1123",
+        },
+      });
+      const data = await res.json();
+      setServer(data.data);
+    }
+    loadServer();
+  }, []);
+
+  useEffect(() => {
     async function loadStats() {
       const res = await fetch(
-        "https://api.mcstatus.io/v2/status/java/mc.ryulsz.fun"
+        `https://api.mcstatus.io/v2/status/java/${server?.ip}`
       );
       const data = await res.json();
       setServerStatus(data);
     }
     loadStats();
-  }, []);
+  }, [server]);
 
   function handleCopyIP() {
-    navigator.clipboard.writeText("mc.ryulsz.fun");
+    navigator.clipboard.writeText(server.ip);
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
   }
@@ -31,8 +45,10 @@ export default function Home() {
       <div className="absolute top-0 left-0 w-full text-white pt-[144px]">
         <div className="w-full max-w-screen-xl mx-auto px-8 mt-24">
           <div className="text-center">
-            <h1 className="font-semibold text-3xl sm:text-6xl">BLOCKBUSTER</h1>
-            <p className="tracking-widest text-xl">mc.ryulsz.fun</p>
+            <h1 className="font-semibold text-3xl sm:text-6xl uppercase">
+              {server?.name}
+            </h1>
+            <p className="tracking-widest text-xl lowercase">{server?.ip}</p>
             <div className="text-center">
               <span className="text-orange-200">
                 {serverStatus?.players.online}
@@ -62,7 +78,7 @@ export default function Home() {
               {copied ? "Copied" : "Copy IP Address"}
             </button>
             <Link
-              href={"/discord"}
+              href={server?.discord ? server.discord : "/"}
               target="_blank"
               className="btn-outline text-nowrap text-sm sm:text-base"
             >

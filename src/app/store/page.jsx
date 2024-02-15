@@ -2,31 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Store() {
-  const [ranks, setRanks] = useState([
-    {
-      name: "VIP",
-      price: 50000,
-      perks: ["3x Home"],
-    },
-    {
-      name: "VIP+",
-      price: 100000,
-      perks: ["All VIP Perks", "5x Home", "30m Fly/day"],
-    },
-    {
-      name: "MVP",
-      price: 200000,
-      perks: ["All VIP+ Perks", "15x Home", "6h Fly/day"],
-    },
-    {
-      name: "MVP+",
-      price: 350000,
-      perks: ["All MVP Perks", "Unlimited Home", "Unlimited Fly"],
-    },
-  ]);
+  const [ranks, setRanks] = useState([]);
+
+  useEffect(() => {
+    async function loadStore() {
+      const res = await fetch("/api/store", {
+        headers: {
+          "X-API-KEY": "1123",
+        },
+      });
+      const data = await res.json();
+      setRanks(data.data);
+    }
+    loadStore();
+  });
   return (
     <>
       <div className="bg-[url('/bg/3.jpg')] min-h-dvh">
@@ -62,7 +54,7 @@ export default function Store() {
                   <div>
                     <h1 className="font-semibold">Perks</h1>
                     <div className="grid grid-cols-2 gap-x-2">
-                      {rank.perks.map((perk, i) => (
+                      {rank.perks.split(",").map((perk, i) => (
                         <li key={i} className="list-none text-bone/80">
                           - {perk}
                         </li>
